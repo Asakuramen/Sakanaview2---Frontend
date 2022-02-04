@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Pragma" content="no-cache"> <!-- キャッシュ無効 -->
+  <meta http-equiv="Cache-Control" content="no-cache"> <!-- キャッシュ無効 -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>sakanaview2</title>
+
+  <!-- cssのインポート -->
+  <link rel="stylesheet" href="./css/library/bootstrap.min.css">
+  <link rel="stylesheet" href="./css/library/bootstrap-slider.css ">
+  <link rel="stylesheet" type="text/css" href="./css/main.css">
+
+
+  <!-- javascriptのインポート -->
+  <script src="./js/library/jquery-3.2.1.min.js"></script>
+  <script src="./js/library/bootstrap.bundle.min.js"></script>
+  <script src="./js/library/bootstrap-slider.js"></script>
+  <script src="./js/library/js-cookie.js"></script>
+  <!-- <script src="./js/library/plotly-2.2.0.min.js"></script> -->
+  <script type="text/javascript" language="JavaScript" src="./js/myfunc/common_function.js"></script>
+  <script type="text/javascript" language="JavaScript" src="./js/myfunc/modal_control.js"></script>
+  <script type="text/javascript" language="JavaScript" src="./js/myfunc/parameter_endecode.js"></script>
+  <script type="text/javascript" language="JavaScript" src="./js/myfunc/window_control.js"></script>
+  <script type="text/javascript" language="JavaScript" src="./js/myfunc/window_settings.js"></script>
+  <script type="text/javascript" language="JavaScript" src="./js/myfunc/dataview.js"></script>
+  <script type="text/javascript" language="JavaScript" src="./js/common_handler.js"></script>
+  <script type="text/javascript" language="JavaScript" src="./js/main.js"></script>
+
+  <!-- CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
+  <script src="https://cdn.plot.ly/plotly-2.2.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+
+
+
+<!-- ヘッダ　メニューバー -->
+<header>
+  <div class="container-fluid">
+
+    <!-- ヘッダ -->
+    <div class="row">
+      <div class="col-12 bg-dark text-white header_menu">
+
+        <div class="btn-group mr-3">
+          <button type="button" class="btn btn-secondary dropdown-toggle" id="header_btn_status" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Loading..
+          </button>
+          <div class="dropdown-menu dropdown-menu-right">
+            <h6 class="dropdown-header">Select network</h6>
+            <button class="dropdown-item" id="header_dropdown_selectnetwork_lan" type="button">LAN (自宅)</button>
+            <button class="dropdown-item" id="header_dropdown_selectnetwork_wan" type="button">WAN (一般)</button>
+          </div>
+        </div>
+
+        <!-- ステータス表示部 -->
+        <!-- <div class="btn-group mr-3" role="group" aria-label="First group">
+          <div id="btn_browser_status"> 
+            <button type="button" class="btn btn-secondary">Loading...</button>
+          </div>
+          <button type="button" class="btn btn-secondary">WAN</button>
+        </div> -->
+
+
+        <!-- サーバ時刻表示部 -->
+        <div class="btn-group" role="group" aria-label="Second group">
+          <button type="button" class="btn btn-light" id="header_datetime_display">
+            mm/dd hh:mm:ss
+          </button>
+        </div>
+
+        <!-- リンク表示部　lg以上で表示する -->
+        <ul class="header_link d-none d-lg-flex">
+          <li><a class="text-light" href="#window_status"><i class="bi bi-diagram-3"></i> Status</a></li>
+          <li><a class="text-light" href="#window_schedule"><i class="bi bi-calendar-event"></i> Schedule</a></li>
+          <li><a class="text-light" href="#window_camera"><i class="bi bi-camera"></i> Camera</a></li>
+          <li><a class="text-light" href="#window_dataview"><i class="bi bi-graph-up"></i> Data view</a></li>
+          <li><a class="text-light" href="#window_log"><i class="bi bi-chat-square-text"></i> Log</a></li>
+          <li><a class="text-light" href="#window_settings"><i class="bi bi-gear"></i> Settings</a></li>
+        </ul>
+
+        <!-- ハンバーガメニューボタン表示部　md以下で表示する  右寄せ-->
+        <div class="d-lg-none ml-auto text-light">
+          <button type="button" class="btn btn-light" id="header_btn_hamburger">
+            <i class="bi bi-list"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- ヘッダ　ハンバーガメニューの中身 -->
+      <div class="row">
+        <div class="col-12 bg-dark text-white" id="header_hamburger_menu">
+
+          <ul id="header_hamburger_menu_ul">
+            <li><a class="header_hamburger_menu_a text-light" href="#window_status"><i class="bi bi-diagram-3"></i>
+                Status</a>
+            </li>
+            <li><a class="header_hamburger_menu_a text-light" href="#window_schedule"><i
+                  class="bi bi-calendar-event"></i>
+                Schedule</a></li>
+            <li><a class="header_hamburger_menu_a text-light" href="#window_camera"><i class="bi bi-camera"></i>
+                Camera</a>
+            </li>
+            <li><a class="header_hamburger_menu_a text-light" href="#window_dataview"><i class="bi bi-graph-up"></i>
+                Data
+                view</a></li>
+            <li><a class="header_hamburger_menu_a text-light" href="#window_log"><i class="bi bi-chat-square-text"></i>
+                Log</a>
+            </li>
+            <li><a class="header_hamburger_menu_a text-light" href="#window_settings"><i class="bi bi-gear"></i>
+                Settings</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+<!-- Schedule編集Modalウインドウ -->
+<div class="modal fade" id="modal_schedule_settings" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Schedule Editer</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row">
+
+            <!-- スケジュール名入力欄 -->
+            <div class="col-12 mb-3">
+              <label for="modal_schedule_name">Schedule name</label>
+              <input type="text" class="form-control" id="modal_schedule_name" value="">
+            </div>
+
+            <!-- デバイス選択プルダウン -->
+            <div class="col-12 col-md-4 mb-3">
+              <label for="modal_device_name">Device</label>
+              <br>
+              <div class="btn-group btn-block">
+                <button type="button" class="btn btn-outline-dark dropdown-toggle" id="modal_device_name"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-id="">
+                  Device name
+                </button>
+                <div class="dropdown-menu" id="modal_dropdown_device_name">
+                </div>
+              </div>
+            </div>
+
+            <!-- 操作選択プルダウン -->
+            <div class="col-12 col-md-4 mb-3">
+              <label for="modal_job_args">Operation</label>
+              <br>
+              <div class="btn-group btn-block">
+                <button type="button" class="btn btn-outline-dark dropdown-toggle" id="modal_job_args"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Operation
+                </button>
+                <div class="dropdown-menu" id="modal_dropdown_job_args">
+                  <div class="dropdown-item">ON</div>
+                  <div class="dropdown-divider"></div>
+                  <div class="dropdown-item">OFF</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 時刻選択プルダウン -->
+            <div class="col-12 col-md-4 mb-3">
+              <label for="modal_schedule_time">Time</label>
+              <br>
+              <input type="time" id="modal_schedule_time" value="08:00" style="width: 100%;">
+            </div>
+
+            <!-- 曜日選択ボタン -->
+            <div class="col-12">
+              <label class="col-form-label">Day</label>
+              <h4 id="modal_schedule_day">
+                <button type="button" class="btn btn-info font-weight-bold" style="margin-bottom: 5px;">Sun</button>
+                <button type="button" class="btn btn-info font-weight-bold" style="margin-bottom: 5px;">Mon</button>
+                <button type="button" class="btn btn-info font-weight-bold" style="margin-bottom: 5px;">Tue</button>
+                <button type="button" class="btn btn-info font-weight-bold" style="margin-bottom: 5px;">Wed</button>
+                <button type="button" class="btn btn-info font-weight-bold" style="margin-bottom: 5px;">Thu</button>
+                <button type="button" class="btn btn-info font-weight-bold" style="margin-bottom: 5px;">Fri</button>
+                <button type="button" class="btn btn-info font-weight-bold" style="margin-bottom: 5px;">Sat</button>
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="modal_button_save">OK</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- 設定変更後確認ウインドウ -->
+<div class="fixed_popup" id="fixed_popup_settings">
+  <div class="card shadow rounded border border-info">
+    <div class="card-header bg-info text-white">
+      設定変更を適用しますか？
+    </div>
+    <div class="card-body">
+      <button type="button" class="btn btn-lg btn-outline-info" id="button_fixed_popup_settings_apply">
+        <i class="bi bi-check-circle-fill"></i> Apply
+      </button>　
+      <button type="button" class="btn btn-lg btn-outline-danger" id="button_fixed_popup_settings_cancel">
+        <i class="bi bi-x-circle-fill"></i> Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+<body>
+
+  <!-- container 全幅  -->
+  <div class="container-fluid">
+    <div class="row">
+
+      <div class="col">
+        <!-- メイン画面の中でrowを入れ子にして、各ウインドウを定義 -->
+
+        <!-- 操作ロック用div -->
+        <div class="row">
+          <div id="lockscreen"></div>
+        </div>
+
+        <!-- Status window -->
+        <div class="row pt-4 px-1" id="window_status">
+
+          <div class="col-12 mb-2">
+            <h2>Status & Control　<i class="bi bi-diagram-3"></i></h2>
+            <hr class="mt-0">
+          </div>
+
+
+          <!-- 各ユニットのFAIL監視項目-->
+          <div class="col-sm-6 col-lg-4 mb-4">
+
+            <div class="card">
+              <div class="card-header text-center">
+                Device health
+              </div>
+
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <!-- 1行内に左寄せと右寄せのテキスト配置 -->
+                  <h5 class="card-title" style="text-align: left; float: left;">Watchdog</h5>
+                  <h4 class="text-right" style="text-align: right;">
+                    <span class="badge badge-light" id="status_card_status"></span>
+                  </h4>
+                </li>
+                <li class="list-group-item">
+                  <h5 class="card-title" style="text-align: left; float: left;">Sensor (water)</h5>
+                  <h4 class="text-right" style="text-align: right;">
+                    <span class="badge badge-light" id="status_card_status_sensor_watar"></span>
+                  </h4>
+                </li>
+                <li class="list-group-item">
+                  <h5 class="card-title" style="text-align: left; float: left;">Sensor (air)</h5>
+                  <h4 class="text-right" style="text-align: right;">
+                    <span class="badge badge-light" id="status_card_status_sensor_air"></span>
+                  </h4>
+                </li>
+            </div>
+          </div>
+
+
+          <!-- Sensor -->
+          <div class="col-sm-6 col-lg-4 mb-4">
+
+            <div class="card">
+              <div class="card-header text-center">
+                Monitor
+              </div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <h5 class="card-title" style="text-align: left; float: left;">Water temperature</h5>
+                  <h4 class="text-right" style="text-align: right;">
+                    <span class="badge badge-light" id="status_card_watar_temperature">　　　</span>
+                  </h4>
+                </li>
+                <li class="list-group-item">
+                  <h5 class="card-title" style="text-align: left; float: left;">Air tempreture</h5>
+                  <h4 class="text-right" style="text-align: right;">
+                    <span class="badge badge-light" id="status_card_air_temperature">　　　</span>
+                  </h4>
+                </li>
+                <li class="list-group-item">
+                  <h5 class="card-title" style="text-align: left; float: left;">Air humidity</h5>
+                  <h4 class="text-right" style="text-align: right;">
+                    <span class="badge badge-light" id="status_card_air_humidity">　　　</span>
+                  </h4>
+                </li>
+                <li class="list-group-item">
+                  <h5 class="card-title" style="text-align: left; float: left;">Remaining food</h5>
+                  <h4 class="text-right" style="text-align: right;">
+                    <span class="badge badge-light" id="status_card_food_level">　　　</span>
+                  </h4>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+
+
+          <!-- Control -->
+          <div class="col-sm-6 col-lg-4 mb-4">
+
+            <div class="card">
+              <div class="card-header text-center">
+                Control
+              </div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item status_card_control" data-device_id="ac100v_no1" data-status="0">
+                  <h5 class="card-title" style="text-align: left; float: left;"></h5>
+                  <h4 class="text-right" style="text-align: right;">
+                    <i class="bi bi-hand-index"></i>
+                    <span class="badge badge-light">OFF</span>
+                  </h4>
+                </li>
+                <li class="list-group-item status_card_control" data-device_id="ac100v_no2" data-status="0">
+                  <h5 class="card-title" style="text-align: left; float: left;"></h5>
+                  <h4 class="text-right" style="text-align: right;">
+                    <i class="bi bi-hand-index"></i>
+                    <span class="badge badge-light">OFF</span>
+                  </h4>
+                </li>
+                <li class="list-group-item status_card_control" data-device_id="ac100v_no3" data-status="0">
+                  <h5 class="card-title" style="text-align: left; float: left;"></h5>
+                  <h4 class="text-right" style="text-align: right;">
+                    <i class="bi bi-hand-index"></i>
+                    <span class="badge badge-light">OFF</span>
+                  </h4>
+                </li>
+                <li class="list-group-item status_card_control" data-device_id="ac100v_no4" data-status="0">
+                  <h5 class="card-title" style="text-align: left; float: left;"></h5>
+                  <h4 class="text-right" style="text-align: right;">
+                    <i class="bi bi-hand-index"></i>
+                    <span class="badge badge-light">OFF</span>
+                  </h4>
+                </li>
+                <li class="list-group-item status_card_control" data-device_id="ac100v_no5" data-status="0">
+                  <h5 class="card-title" style="text-align: left; float: left;"></h5>
+                  <h4 class="text-right" style="text-align: right;">
+                    <i class="bi bi-hand-index"></i>
+                    <span class="badge badge-light">OFF</span>
+                  </h4>
+                </li>
+                <li class="list-group-item status_card_control" data-device_id="ac100v_no6" data-status="0">
+                  <h5 class="card-title" style="text-align: left; float: left;"></h5>
+                  <h4 class="text-right" style="text-align: right;">
+                    <i class="bi bi-hand-index"></i>
+                    <span class="badge badge-light">OFF</span>
+                  </h4>
+                </li>
+                <li class="list-group-item status_card_control" data-device_id="feeder_no1" data-status="2">
+                  <h5 class="card-title" style="text-align: left; float: left;"></h5>
+                  <h4 class="text-right" style="text-align: right;">
+                    <i class="bi bi-hand-index"></i>
+                    <span class="badge badge-primary">Feeding</span>
+                  </h4>
+                </li>
+              </ul>
+
+            </div>
+
+          </div>
+
+          <!-- 操作確認modalウインドウ -->
+          <div class="modal fade" id="modal_confirm_operation" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Confirmation</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>You are trying to operate the following device.</p>
+                  <p class="font-weight-bold" id="modal_confirm_operation_text"></p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" id="modal_confirm_operation_button_OK">　OK　</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+
+        <!-- Schedule window -->
+        <div class="row pt-4 px-1" id="window_schedule">
+
+          <div class="col-12 mb-2">
+            <h3>Schedule　<i class="bi bi-calendar-event"></i></h3>
+            <hr class="mt-0">
+          </div>
+
+          <!-- 予約イベントをカード単位で区切り表示する -->
+          <div class="col-lg-6 col-xl-4 mb-4" id="schedule_copy_template" style="display: none;">
+            <div class="card">
+              <!-- カードヘッダ部 -->
+              <div class="card-header" style="display: flex; justify-content: space-between;">
+                <h5 class="card_schedule_name">New schedule</h5>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                  <button type="button" class="button_schedule_edit btn btn-outline-info">
+                    <i class="bi bi-pen"></i>Edit</button>
+                  <button type="button" class="button_schedule_delete btn btn-outline-danger">
+                    <i class="bi bi-trash"></i>Del</button>
+                </div>
+              </div>
+
+              <!-- カード中身部 -->
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-11 mb-2">
+                    <i class="bi bi-tag"></i>
+                    <span class="card_device_name card-text" data-id="ac100v_no1">select device</span>
+                  </div>　
+                  <div class="col-5 mb-2">
+                    <i class="bi bi-clock"></i>
+                    <span class="card_schedule_time card-text">00:00</span>
+                  </div>
+                  <div class="col-5 mb-2">
+                    <i class="bi bi-lightning-charge"></i>
+                    <span class="card_job_args card-text">OFF</span>
+                  </div>
+                </div>
+                <h5 class="card_schedule_day">
+                  <span class="badge badge-light">Sun</span>
+                  <span class="badge badge-light">Mon</span>
+                  <span class="badge badge-light">Tue</span>
+                  <span class="badge badge-light">Wed</span>
+                  <span class="badge badge-light">Thu</span>
+                  <span class="badge badge-light">Fri</span>
+                  <span class="badge badge-light">Sat</span>
+                </h5>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- 新規スケジュール作成ボタン -->
+          <div class="col-lg-6 col-xl-4 mb-4">
+            <div class="card">
+              <!-- カードヘッダ部 -->
+              <div class="card-header" style="display: flex; justify-content: space-between;">
+                <h5 class="card_schedule_name">Add new schedule</h5>
+                <div class="btn btn-outline-info" id="button_schedule_new">　
+                  <i class="bi bi-plus-circle"></i>　
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+
+
+        <!-- Camera window -->
+        <div class="row pt-4 px-1" id="window_camera">
+
+          <div class="col-12 mb-2">
+            <h2>Camera　<i class="bi bi-camera"></i> </h2>
+            <hr class="mt-0">
+          </div>
+
+          <!-- source選択 -->
+          <div class="col-12 col-md-6 mb-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="camera_select_source">Source</label>
+                <label class="input-group-text bg-white" id="icon_camera_select_source" for="camera_select_source">
+                  <i class="bi bi-card-image"></i></label>
+              </div>
+              <select class="custom-select" id="camera_select_source">
+                <option value="camera_display_picture">Picture</option>
+                <option value="camera_display_movie">Movie</option>
+                <option value="camera_display_live">Live video</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- movie/picture : 手動撮影ボタン -->
+          <div class="col-12 col-md-6">
+            <button class="btn btn-block btn-outline-primary" id="camera_take_picmovie">
+              <i class="bi bi-camera"></i>　Take now
+            </button>　
+          </div>
+
+          <!-- Live : start/stopボタン -->
+          <div class="col-12 col-md-6" style="display: none;">
+            <button class="btn btn-block btn-outline-primary" id="camera_live_startstop" data-status="0">
+              <i class="bi bi-play-circle"></i>　Start live streaming
+            </button>　
+          </div>
+
+          <!-- Picture 表示領域 -->
+          <div class="col-12 mb-4 camera_display_selected" style="text-align: center;" id="camera_display_picture">
+            <img src="" class="img-fluid" id="camera_display_source_picture" style="max-height: 480px;" alt="" onerror="this.src='./img/notfound.jpg'">
+          </div>
+
+          <!-- Movie 表示領域 -->
+          <div class="col-12 mb-4" id="camera_display_movie" style="display: none;">
+            <div class="embed-responsive embed-responsive-16by9" style="max-height: 480px;">
+              <video id="camera_video" controls>
+                <source src="" id="camera_display_source_movie">
+              </video>
+            </div>
+          </div>
+
+          <!-- Live ビデオ表示領域 -->
+          <div class="col-12 mb-4" id="camera_display_live" style="display: none;">
+            <div class="embed-responsive embed-responsive-16by9" style="max-height: 480px;">
+              <video id="camera_live" controls></video>
+            </div>
+          </div>
+
+          <!-- pagination -->
+          <div class="col-12 mb-4">
+            <nav aria-label="Pagination_picmovie">
+              <ul class="pagination justify-content-center">
+                <li class="page-item" id="camera_pagination_previous">
+                  <a class="page-link" href="javascript:void(0)" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only"></span>
+                  </a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link text-center" id="camera_datetimenow" href="javascript:void(0)" data-index="0"
+                    style="width: 200px;">
+                    yyyy-mm-dd hh:mm:ss
+                  </a>
+                </li>
+                <li class="page-item" id="camera_pagination_next">
+                  <a class="page-link" href="javascript:void(0)" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only"></span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+
+
+
+        </div>
+
+
+        <!-- Data view window -->
+        <div class="row pt-4 px-1" id="window_dataview">
+          <a id=""></a>
+
+          <div class="col-12 mb-2">
+            <h2>Data view　<i class="bi bi-graph-up"></i> </h2>
+            <hr class="mt-0">
+          </div>
+
+          <div class="col-12 col-md-6 mb-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="dataview_select_sensorname">Sensor</label>
+              </div>
+              <select class="custom-select" id="dataview_select_sensorname">
+                <option value="watar_temperature">watar_temperature</option>
+                <option value="air_temperature">air_temperature</option>
+                <option value="air_humidity">air_humidity</option>
+                <option value="ac100v1">ac100v_no1</option>
+                <option value="ac100v2">ac100v_no2</option>
+                <option value="ac100v3">ac100v_no3</option>
+                <option value="ac100v4">ac100v_no4</option>
+                <option value="ac100v5">ac100v_no5</option>
+                <option value="ac100v6">ac100v_no6</option>
+                <option value="food_level">food_level</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 mb-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="dataview_select_period">Period</label>
+              </div>
+              <select class="custom-select" id="dataview_select_period">
+                <option value="1">1 day</option>
+                <option value="7">week</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- plotly -->
+          <div class="col-12 mb-4" id="dataview_plotly">
+          </div>
+
+        </div>
+
+
+        <!-- Log window -->
+        <div class="row pt-4 px-1" id="window_log">
+
+          <div class="col-12 mb-2">
+            <h2>Log　<i class="bi bi-chat-square-text"></i> </h2>
+            <hr class="mt-0">
+          </div>
+
+          <!-- 表示件数選択プルダウン -->
+          <div class="col-12 col-md-6 mb-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="log_select_showentries">Show entries</label>
+              </div>
+              <select class="custom-select" id="log_select_showentries">
+                <option value="10">10</option>
+                <option value="30">30</option>
+                <option value="100">100</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- logtypeフィルタ -->
+          <div class="col-12 col-md-6 mb-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="log_select_logtypefilter">Logtype filter</label>
+              </div>
+              <select class="custom-select" id="log_select_logtypefilter">
+                <option value="iwa">Show all log</option>
+                <option value="wa">ALARM + WARNING</option>
+                <option value="a">ALARM</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- log table -->
+          <div class="col-12 mt-2 table-responsive">
+            <table class="table table-striped table-sm">
+              <thead>
+                <tr>
+                  <th>Datetime</th>
+                  <th>Type</th>
+                  <th>Log</th>
+                </tr>
+              </thead>
+              <tbody id="tbody_log">
+                <tr>
+                  <td>2020/12/29 15:00:00</td>
+                  <td><span class="badge badge-info">Info</span></td>
+                  <td>[Auto] Feeding completed</td>
+                </tr>
+                <tr>
+                  <td>2021/2/27 15:00:00</td>
+                  <td><span class="badge badge-warning">Warning</span></td>
+                  <td>Temperture of water is high.</td>
+                </tr>
+                <tr></tr>
+                <td>2021/3/1 15:00:00</td>
+                <td><span class="badge badge-danger">Alarm</span></td>
+                <td>cant get temperture of water from sensor.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+        <!-- Settings window -->
+        <div class="row pt-4 px-1" id="window_settings">
+
+          <div class="col-12 mb-2">
+            <h2>Settings　<i class="bi bi-gear"></i> </h2>
+            <hr class="mt-0">
+          </div>
+
+          <div class="col-12 mb-4">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="label_dataview_sensor">Category</label>
+              </div>
+              <select class="custom-select" id="custom_select_settings">
+                <option value="settings_tab_control">Control</option>
+                <option value="settings_tab_camera">Camera</option>
+                <option value="settings_tab_ac100vname">Device name</option>
+                <option value="settings_tab_other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Control -->
+          <div class="col-12 settings_tabcontents" id="settings_tab_control">
+            <div class="row">
+
+              <!-- 餌やりソレノイド駆動パラメータ -->
+              <div class="col-md-6 col-lg-4 mb-4">
+                <label for="solenoid_on_count">feeding</label>
+                <input type="text" class="form-control settings_input" id="solenoid_on_count" placeholder="" value=""
+                  required="">
+                <div class="invalid-feedback">回数を入力してください</div>
+                <small class="text-muted">ソレノイド駆動回数[回]</small>
+              </div>
+              <div class="col-md-6 col-lg-4 mb-4">
+                <label for="solenoid_on_count">feeding</label>
+                <input type="text" class="form-control settings_input" id="solenoid_on_time" placeholder="" value=""
+                  required="">
+                <div class="invalid-feedback">秒数[s]を入力してください</div>
+                <small class="text-muted">ソレノイドON時間[s]</small>
+              </div>
+              <div class="col-md-6 col-lg-4 mb-4">
+                <label for="solenoid_on_count">feeding</label>
+                <input type="text" class="form-control settings_input" id="solenoid_on_intervaltime" placeholder=""
+                  value="" required="">
+                <div class="invalid-feedback">秒数[s]を入力してください</div>
+                <small class="text-muted">ソレノイド駆動インターバル[s]</small>
+              </div>
+
+              <!-- センサ値更新間隔 -->
+              <div class="col-md-6 col-lg-4 mb-4">
+                <label for="update_sensordb_interval">Server sensor update interval [min]</label>
+                <input type="text" class="form-control settings_input" id="update_sensordb_interval" placeholder=""
+                  value="" required="">
+                <div class="invalid-feedback">数値を入力してください</div>
+              </div>
+
+              <!-- スライドバー　冷却ファン動作温度　 -->
+              <div class="col-12 mb-4">
+                <label class="mb-5">Cooling fan active temperture [℃]　</label>
+                <input class="settings_input" id="slide_threshold_coolfan">
+              </div>
+
+              <!-- スライドバー　ヒーター動作温度　 -->
+              <div class="col-12 mb-4">
+                <label class="mb-5">Heater active temperture [℃]　</label>
+                <input class="settings_input" id="slide_threshold_heater">
+              </div>
+
+              <!-- スライドバー　水温ALARM閾値　 -->
+              <div class="col-12 mb-4">
+                <label class="mb-5">Water temperture ALARM range [℃]　</label>
+                <input class="settings_input" id="alarm_water_temperture">
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Camera-->
+          <div class="col-12 settings_tabcontents" id="settings_tab_camera" style="display: none">
+            <div class="row">
+
+              <div class="col-md-6 col-lg-4 mb-4">
+                <label for="ac100v_name_1">Recording video time[s]</label>
+                <input type="text" class="form-control settings_input" id="record_movie_time" placeholder="10" value=""
+                  required="">
+                <div class="invalid-feedback">名前を入力してください。</div>
+              </div>
+              <div class="col-md-6 col-lg-4 mb-4">
+                <label for="ac100v_name_2">Picture exposure frame（brightness）[frame]</label>
+                <input type="text" class="form-control settings_input" id="picture_f" placeholder="20" value=""
+                  required="">
+                <div class="invalid-feedback">名前を入力してください。</div>
+              </div>
+              <div class="col-md-6 col-lg-4 mb-4">
+                <label for="ac100v_name_2">Live streaming maximum time [min]</label>
+                <input type="text" class="form-control settings_input" id="livestream_maxtime" placeholder="20" value=""
+                  required="">
+                <div class="invalid-feedback">名前を入力してください。</div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Device name -->
+          <div class="col-12 settings_tabcontents" id="settings_tab_ac100vname" style="display: none">
+            <div class="row">
+
+              <div class="col-md-4 col-sm-6 mb-2">
+                <label for="ac100v_name_1">ac100v_no1</label>
+                <input type="text" class="form-control settings_input" id="ac100v_no1" placeholder="name" value=""
+                  required="">
+                <div class="invalid-feedback">名前を入力してください。</div>
+              </div>
+              <div class="col-md-4 col-sm-6 mb-2">
+                <label for="ac100v_name_2">ac100v_no2</label>
+                <input type="text" class="form-control settings_input" id="ac100v_no2" placeholder="name" value=""
+                  required="">
+                <div class="invalid-feedback">名前を入力してください。</div>
+              </div>
+              <div class="col-md-4 col-sm-6 mb-2">
+                <label for="ac100v_name_3">ac100v_no3</label>
+                <input type="text" class="form-control settings_input" id="ac100v_no3" placeholder="name" value=""
+                  required="">
+                <div class="invalid-feedback">名前を入力してください。</div>
+              </div>
+              <div class="col-md-4 col-sm-6 mb-2">
+                <label for="ac100v_name_4">ac100v_no4</label>
+                <input type="text" class="form-control settings_input" id="ac100v_no4" placeholder="name" value=""
+                  required="">
+                <div class="invalid-feedback">名前を入力してください。</div>
+              </div>
+              <div class="col-md-4 col-sm-6 mb-2">
+                <label for="ac100v_name_5">ac100v_no5</label>
+                <input type="text" class="form-control settings_input" id="ac100v_no5" placeholder="coolfan" value=""
+                  required="">
+                <div class="invalid-feedback">名前を入力してください。</div>
+              </div>
+              <div class="col-md-4 col-sm-6 mb-2">
+                <label for="ac100v_name_6">ac100v_no6</label>
+                <input type="text" class="form-control settings_input" id="ac100v_no6" placeholder="heater" value=""
+                  required="">
+                <div class="invalid-feedback">名前を入力してください。</div>
+              </div>
+              <div class="col-md-4 col-sm-6 mb-2">
+                <label for="feeder_no1">feeder_no1</label>
+                <input type="text" class="form-control settings_input" id="feeder_no1" placeholder="heater" value=""
+                  required="">
+                <div class="invalid-feedback">名前を入力してください。</div>
+              </div>
+              <div class="col-md-4 col-sm-6 mb-2">
+                <label for="picmovie_no1">picmovie_no1</label>
+                <input type="text" class="form-control settings_input" id="picmovie_no1" placeholder="heater" value=""
+                  required="">
+                <div class="invalid-feedback">名前を入力してください。</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Other -->
+          <div class="col-12 settings_tabcontents" id="settings_tab_other" style="display: none">
+            <div class="row">
+
+              <div class="col-md-6 col-lg-4 mb-2">
+                <label for="mailaddress">Water temperture compensation [℃]</label>
+                <input type="text" class="form-control settings_input" id="watar_temperature_compensation"
+                  placeholder="+2.0">
+                <div class="invalid-feedback">数値を入力してください</div>
+              </div>
+
+              <div class="col-md-6 col-lg-4 mb-2">
+                <label for="mailaddress">Air temperture compensation [℃]</label>
+                <input type="text" class="form-control settings_input" id="air_temperature_compensation"
+                  placeholder="+2.0">
+                <div class="invalid-feedback">数値を入力してください</div>
+              </div>
+
+              <div class="col-md-6 col-lg-4 mb-2">
+                <label for="mailaddress">Air humidity compensation [%]</label>
+                <input type="text" class="form-control settings_input" id="air_humidity_compensation"
+                  placeholder="-15.0">
+                <div class="invalid-feedback">数値を入力してください</div>
+              </div>
+
+              <div class="col-md-6 col-lg-4 mb-2">
+                <label for="mailaddress">System administrator mail address</label>
+                <input type="email" class="form-control settings_input" id="mailaddress" placeholder="xxx@gmail.com">
+                <div class="invalid-feedback">有効なメールアドレスを入力してください。</div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+
+        <!-- 空白 -->
+        <div class="row pt-4 px-1">
+          <div class="col-12">
+            <hr class="mb-2">
+            <div style="height: 300px;"></div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</body>
+
+</html>

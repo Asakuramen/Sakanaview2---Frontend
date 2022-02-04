@@ -1,0 +1,117 @@
+@charset "UTF-8";
+
+:root{
+    --color-bootstrap-danger: #dc3545;
+    --color-bootstrap-warning: #ffc107;
+    --color-bootstrap-success: #28a745;
+    --color-bootstrap-info: #17a2b8;
+    --color-bootstrap-primary: #007bff;
+    --color-bootstrap-secondary: #6c757d;
+    --color-bootstrap-dark: #343a40;
+}
+
+
+.header_menu {
+    height: 60px; 
+    padding: 20px 20px; 
+    box-sizing: border-box;  
+    position: fixed; /* ウィンドウを基準に画面に固定 */
+    top: 0; /* 上下の固定位置を上から0pxにする */
+    left: 0; /* 左右の固定位置を左から0pxにする */
+    display: flex; /* 中の要素を横並びにする */
+    align-items: center; /* 中の要素を上下中央に並べる */
+    z-index: 1000; /*常時最手前に表示する*/
+}
+
+header .header_link {
+    display: flex; /* 中の要素を横並びにする */
+    margin: auto 0;  /* 中の要素を上下中央に並べる */
+    padding-left: 30px;
+}
+
+header .header_link li {
+    list-style: none; /* リストの[・]を消す */
+    align-items: center; /* 中の要素を上下中央に並べる */
+}
+
+header .header_link li + li {
+    margin-left: 30px; /* メニューそれぞれに間隔をあけるため */
+}
+
+#header_hamburger_menu{
+    position: fixed;  
+    top: 60px; /* 上下の固定位置を上から0pxにする */
+    left: 0; /* 左右の固定位置を左から0pxにする */
+    display: none; /* デフォルトは非表示 */
+    z-index: 1000; /* 常時最手前に表示する */
+    border-top: ridge 4px #6c757d;;
+}
+
+#header_hamburger_menu li{ 
+    list-style: none; /* リストの[・]を消す */
+    padding: 10px 0px;
+}
+
+
+body {
+    padding-top: 60px; /* ヘッダーの後ろに要素が隠れないようにするため */
+}
+
+
+
+
+
+/* スライダ大きさ　css上書き */
+.slider.slider-horizontal{
+    width: 100%;
+}
+
+/* Settings Monitor スライダー */
+.slider-handle {
+    background: var(--color-bootstrap-secondary);
+}
+
+.tooltip.show{
+    opacity: 0.5;
+}
+
+#slider_coolfan .slider-track-high {
+    background: var(--color-bootstrap-info);
+}
+
+#slider_heater .slider-selection {
+    background: var(--color-bootstrap-info);
+}
+
+#slider_alarm .slider-track-high {
+	background: var(--color-bootstrap-danger);
+}
+
+#slider_alarm .slider-track-low {
+	background: var(--color-bootstrap-danger);
+}
+
+.fixed_popup {
+	z-index: 1000;
+    position: fixed;
+    margin-left: calc(50% - 145px);
+    bottom: 10%;
+    text-align:center;
+    display: none;
+}
+
+
+
+/* 操作ロックdiv */
+#lockscreen{
+    height: 100%;
+    width:  100%;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    z-index: 1; /* dropdownを隠さないように */
+    opacity: 0.1;
+    background-color: #000000;
+    /* display: none; */
+
+}

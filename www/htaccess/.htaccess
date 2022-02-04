@@ -1,0 +1,6 @@
+# authenticate(Basic)
+AuthUserFile /home/pi/www/htaccess
+AuthGroupFile /dev/null
+AuthName "Please enter your ID and password"
+AuthType Basic
+require valid-user
