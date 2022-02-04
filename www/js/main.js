@@ -24,7 +24,7 @@ $(function () {
   }
   // WAN接続
   else if (connect_type == 'wan') {
-    ws = new WebSocket("ws://sakanaview2.mydns.jp:3300");
+    ws = new WebSocket("ws://xxxセキュリティの問題のため秘匿xxx:3300");
     document.getElementById("header_dropdown_selectnetwork_lan").classList.remove("active");
     document.getElementById("header_dropdown_selectnetwork_wan").classList.add("active");
   }
